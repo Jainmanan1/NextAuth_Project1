@@ -20,7 +20,7 @@ function VerifyEmailContent() {
       if (!token) return;
       setLoading(true);
       try {
-        await axios.post("/api/users/verifyemail", { token });
+        await axios.post("/api/users/verify-email", { token });
         setVerified(true);
         localStorage.removeItem("pending_email");
         toast.success("Email verified successfully!");
