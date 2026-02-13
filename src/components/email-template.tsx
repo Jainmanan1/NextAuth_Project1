@@ -18,7 +18,7 @@ export function EmailTemplate({ email, emailType, token, baseUrl }: EmailTemplat
   const isVerify = emailType === EmailType.VERIFY;
 
   const actionUrl = isVerify
-    ? `${baseUrl}/verifyemail?token=${token}`
+    ? `${baseUrl}/verify-email?token=${token}`
     : `${baseUrl}/resetpassword?token=${token}`;
 
   const title = isVerify ? "Verify your email" : "Reset your password";
