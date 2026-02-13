@@ -14,7 +14,10 @@ export async function sendEmail({
   emailType,
   token,
 }: SendEmailOptions): Promise<void> {
-  const baseUrl = process.env.DOMAIN || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL||(process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000");
+
 
   const subject =
     emailType === EmailType.VERIFY
