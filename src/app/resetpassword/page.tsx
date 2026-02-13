@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
@@ -6,9 +7,9 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import Input from "@/components/input";
 
-export default function ResetPasswordPage() {
+  function ResetPasswordContent() {
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = searchParams.get("token")??"";
   const router = useRouter();
 
   const [user, setUser] = useState({
@@ -22,23 +23,14 @@ export default function ResetPasswordPage() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [buttonDisabled, setButtonDisabled] = useState(true);
+ 
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    if (!token) {
-      setError(true);
-      return;
-    }
-    const isPasswordValid = user.password.length >= 8;
-    const passwordsMatch = user.password === user.confirmPassword;
+  const isPasswordValid = user.password.length >= 8;
+  const passwordsMatch = user.password === user.confirmPassword;
 
-    if (token && isPasswordValid && passwordsMatch) {
-      setButtonDisabled(false);
-    } else {
-      setButtonDisabled(true);
-    }
-  }, [token, user]);
+  const buttonDisabled =
+    !token || !isPasswordValid || !passwordsMatch || loading;
 
   const resetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,5 +151,12 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
