@@ -25,9 +25,9 @@ export  async function proxy(request:NextRequest){
         const {payload}= await jwtVerify(token,secret);
         const decoded = payload as unknown as {userId:string, isVerified:boolean};
         if(!decoded.isVerified && !isPublicPath){
-            return NextResponse.redirect(new URL('/verifyemail',request.url));
+            return NextResponse.redirect(new URL('/verify-email',request.url));
         }
-        if(decoded.isVerified && isPublicPath && pathname !== "/verifyemail"){
+        if(decoded.isVerified && isPublicPath && pathname !== "/verify-email"){
             return NextResponse.redirect(new URL('/profile',request.url));
         }
         return NextResponse.next();
