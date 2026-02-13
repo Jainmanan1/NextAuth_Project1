@@ -37,6 +37,7 @@ export  async function proxy(request:NextRequest){
         response.cookies.delete("token");
         return response;
         
+        
     }
    
 }
