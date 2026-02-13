@@ -4,7 +4,7 @@ import { jwtVerify } from "jose";
 const PUBLIC_PATHS = [
   "/login",
   "/signup",
-  "/verifyemail",
+  "/verify-email",
   "/forgotpassword",
   "/resetpassword",
 ];
@@ -47,7 +47,7 @@ export const config = {
         '/profile',
         '/login',
         '/signup',
-        '/verifyemail',
+        '/verify-email',
         '/forgotpassword',
         '/resetpassword'
 
