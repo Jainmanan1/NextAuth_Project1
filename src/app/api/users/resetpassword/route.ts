@@ -6,6 +6,40 @@ import bcrypt from "bcryptjs"
 import { rateLimit } from "@/services/rate_limiting";
 import { getClientIp } from "@/lib/get_Ip";
 import {redis} from "@/lib/redis";
+import { validateToken } from "@/helper/tokenUtils";
+
+export async function GET(request:NextRequest){
+  try {
+    await connects();
+     const { searchParams } = new URL(request.url);
+     const token = searchParams.get("token");
+     if (!token) {
+       return NextResponse.json(
+         { valid: false, message: "No token provided" },
+         { status: 400 },
+       );
+     }
+     const user = await validateToken(token!, "RESET");
+     if (!user) {
+       return NextResponse.json(
+         { valid: false, message: "Invalid or expired token" },
+         { status: 400 },
+       );
+     }
+
+     return NextResponse.json({ valid: true }, { status: 200 });
+    
+  } catch (error) {
+      console.error("Token validation error:", error);
+      return NextResponse.json(
+        { valid: false, message: "Internal server error" },
+        { status: 500 },
+      );
+    
+  }
+
+}
+
 export async function POST(request:NextRequest){
     try {
         await connects();

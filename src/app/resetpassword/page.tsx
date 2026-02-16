@@ -7,10 +7,12 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import Input from "@/components/input";
 
+
   function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token")??"";
   const router = useRouter();
+  const [isValidating, setIsValidating] = useState(true);
 
   const [user, setUser] = useState({
     password: "",
@@ -31,6 +33,28 @@ import Input from "@/components/input";
 
   const buttonDisabled =
     !token || !isPasswordValid || !passwordsMatch || loading;
+
+    useEffect(()=>{
+      const verifedToken  = async()=>{
+        if(!token){
+          setError(true);
+          setIsValidating(false);
+          return;
+        }
+        try {
+          const response = await axios.get(`/api/users/resetpassword?token=${token}`);
+           setIsValidating(false);
+           if(!response.data.valid){
+            setError(true);
+           }
+          
+        } catch (error) {
+          setError(true);
+          setIsValidating(false);
+        }
+      }
+      verifedToken();
+    },[token]);
 
   const resetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,6 +87,37 @@ import Input from "@/components/input";
       setLoading(false);
     }
   };
+
+  if (isValidating) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if(error){
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
+        <div className="bg-gray-900/50 backdrop-blur-xl border border-red-500/50 p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
+          <h2 className="text-red-500 text-xl font-bold mb-2">
+            Link Expired or Invalid
+          </h2>
+          <p className="text-gray-400 mb-6">
+            Security tokens are only valid for a short time. Please request a
+            new link.
+          </p>
+          <Link
+            href="/forgotpassword"
+            title="Request new link"
+            className="bg-blue-600 text-white px-6 py-2.5 rounded-xl hover:bg-blue-700 transition-colors inline-block"
+          >
+            Back to Forgot Password
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-[#0a0a0a] p-4 selection:bg-blue-500/30 overflow-hidden">
@@ -155,7 +210,7 @@ import Input from "@/components/input";
 }
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0a0a0a]" />}>
       <ResetPasswordContent />
     </Suspense>
   );
