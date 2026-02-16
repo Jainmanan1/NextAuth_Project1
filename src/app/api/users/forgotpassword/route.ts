@@ -20,13 +20,13 @@ export async function POST(request: NextRequest) {
     const ip = getClientIp(request);
     
         const accountRl = await rateLimit({
-          key: `login:${email}:${ip}`,
+          key: `forgot-password:${email}:${ip}`,
           limit: 5,
           window: 60,
         });
     
         const ipRl = await rateLimit({
-          key: `login-ip:${ip}`,
+          key: `forgot-password-ip:${ip}`,
           limit: 3600,
           window: 3600,
         });
